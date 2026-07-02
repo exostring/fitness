@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фитнес-бот для блогеров</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;--s1:#0f0f1a;--s2:#161625;
+  --border:rgba(255,255,255,0.07);
+  --text:#efefef;--muted:#666;--muted2:#999;
+  --accent:#7c6ff7;--accent2:#ff5f5f;--green:#3ddc84;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-size:.95rem;font-weight:700;color:var(--accent)}
+.nav-cta{background:var(--accent);color:#fff;padding:.5rem 1.25rem;border-radius:8px;font-size:.85rem;font-weight:700;transition:opacity .2s}
+.nav-cta:hover{opacity:.85}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9rem 1.5rem 6rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,111,247,.1) 0%,transparent 65%);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(124,111,247,.25);padding:.35rem 1rem;border-radius:100px;margin-bottom:2rem}
+.hero h1{font-size:clamp(2.4rem,7vw,5.5rem);font-weight:900;line-height:1.02;letter-spacing:-.04em;max-width:860px;margin-bottom:1.75rem}
+.hero h1 s{text-decoration:line-through;text-decoration-color:var(--accent2);color:var(--muted2)}
+.hero-sub{font-size:clamp(.95rem,2vw,1.15rem);color:var(--muted2);max-width:520px;margin-bottom:.75rem;line-height:1.75}
+.hero-note{font-size:.8rem;color:var(--muted);margin-bottom:2.5rem}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{padding:.875rem 2rem;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;border:none;transition:opacity .2s,transform .15s;display:inline-block}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);transition:border-color .2s,color .2s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.18);color:var(--text)}
+.skeptic{background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 1.5rem;text-align:center}
+.skeptic-inner{max-width:680px;margin:0 auto}
+.skeptic h2{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:900;letter-spacing:-.03em;margin-bottom:1rem;line-height:1.15}
+.skeptic h2 span{color:var(--accent2)}
+.skeptic p{color:var(--muted2);font-size:1rem;line-height:1.75;margin-bottom:1rem}
+.facts{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:2rem}
+.fact{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;text-align:left;flex:1;min-width:160px;max-width:210px}
+.fact-num{font-size:2rem;font-weight:900;letter-spacing:-.03em;color:var(--text);margin-bottom:.25rem}
+.fact-num span{color:var(--accent)}
+.fact-label{font-size:.78rem;color:var(--muted);line-height:1.5}
+.section{padding:6rem 1.5rem;max-width:1100px;margin:0 auto}
+.label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:.75rem}
+.title{font-size:clamp(1.75rem,4vw,2.75rem);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.sub{font-size:1rem;color:var(--muted2);line-height:1.75;max-width:560px}
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:3rem}
+@media(max-width:600px){.auth-grid,.prog-grid{grid-template-columns:1fr}}
+.auth-item{background:var(--s1);padding:2rem}
+.auth-item .icon{font-size:1.5rem;margin-bottom:.75rem;display:block}
+.auth-item h3{font-size:1rem;font-weight:700;margin-bottom:.4rem}
+.auth-item p{font-size:.875rem;color:var(--muted2);line-height:1.65}
+.screens{padding:5rem 1.5rem;background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.screens-inner{max-width:1100px;margin:0 auto}
+.screens-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:3rem}
+.screen-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.screen-placeholder{aspect-ratio:16/10;background:linear-gradient(135deg,rgba(124,111,247,.06),rgba(255,95,95,.04));border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:var(--muted);font-size:.8rem}
+.screen-placeholder .ph-icon{font-size:2rem;opacity:.4}
+.screen-info{padding:1rem 1.25rem}
+.screen-info h4{font-size:.9rem;font-weight:700;margin-bottom:.3rem}
+.screen-info p{font-size:.8rem;color:var(--muted2);line-height:1.5}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:3rem}
+.prog-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:1.75rem}
+.prog-card .prog-icon{font-size:2rem;margin-bottom:1rem;display:block}
+.prog-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem}
+.prog-card p{font-size:.85rem;color:var(--muted2);line-height:1.65}
+.prog-example{margin-top:1rem;padding:.75rem;background:rgba(124,111,247,.07);border:1px solid rgba(124,111,247,.12);border-radius:8px;font-size:.78rem;color:var(--muted2);line-height:1.5}
+.prog-example strong{color:var(--accent)}
+.how-list{display:flex;flex-direction:column;gap:0;margin-top:3rem}
+.how-item{display:grid;grid-template-columns:48px 1fr;gap:1.5rem;padding:2rem 0;border-bottom:1px solid var(--border);align-items:start}
+.how-item:last-child{border-bottom:none}
+.how-num{width:48px;height:48px;background:rgba(124,111,247,.1);border:1px solid rgba(124,111,247,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--accent);flex-shrink:0;margin-top:2px}
+.how-item h3{font-size:1.05rem;font-weight:700;margin-bottom:.4rem}
+.how-item p{font-size:.875rem;color:var(--muted2);line-height:1.65}
+.how-note{margin-top:.75rem;padding:.6rem .9rem;background:rgba(61,220,132,.06);border:1px solid rgba(61,220,132,.12);border-radius:8px;font-size:.78rem;color:var(--green);line-height:1.5}
+.calc-wrap{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:3rem;margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+@media(max-width:700px){.calc-wrap{grid-template-columns:1fr;gap:2rem;padding:2rem}}
+.calc-title{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.75rem}
+.slider-row{margin-bottom:1.5rem}
+.slider-top{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.6rem}
+.slider-top strong{color:var(--text)}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:rgba(255,255,255,.08);border-radius:100px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer;border:3px solid var(--bg)}
+.calc-rows{margin-top:.5rem}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--border);font-size:.9rem}
+.calc-row:last-child{border-bottom:none;padding-top:1.25rem}
+.calc-row .l{color:var(--muted2)}
+.calc-row .v{font-weight:600}
+.calc-row.total .l{color:var(--text);font-weight:700}
+.calc-row.total .v{color:var(--green);font-size:1.5rem;font-weight:900}
+.calc-text h3{font-size:1.4rem;font-weight:800;line-height:1.3;margin-bottom:1rem;letter-spacing:-.02em}
+.calc-text p{font-size:.9rem;color:var(--muted2);line-height:1.75;margin-bottom:1rem}
+.pill{display:inline-block;background:rgba(61,220,132,.1);color:var(--green);font-size:.75rem;font-weight:600;padding:.3rem .85rem;border-radius:100px;border:1px solid rgba(61,220,132,.2)}
+.conditions{background:var(--s1);border-top:1px solid var(--border);padding:5rem 1.5rem;text-align:center}
+.conditions-inner{max-width:640px;margin:0 auto}
+.conditions h2{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:900;letter-spacing:-.03em;margin-bottom:1rem;line-height:1.2}
+.conditions p{color:var(--muted2);font-size:1rem;line-height:1.75;margin-bottom:2rem}
+.condition-list{display:flex;flex-direction:column;gap:.75rem;text-align:left;margin:2rem 0}
+.condition-item{display:flex;align-items:flex-start;gap:.75rem;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;font-size:.9rem}
+.condition-item .ci{color:var(--accent);font-size:1rem;margin-top:1px;flex-shrink:0}
+.condition-item p{color:var(--muted2);line-height:1.5}
+.condition-item strong{color:var(--text)}
+.cta{text-align:center;padding:7rem 1.5rem;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(124,111,247,.08) 0%,transparent 65%);pointer-events:none}
+.cta h2{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:1.25rem}
+.cta p{color:var(--muted2);font-size:1.05rem;margin-bottom:2.5rem;max-width:460px;margin-left:auto;margin-right:auto}
+.cta-note{margin-top:1.25rem;font-size:.8rem;color:var(--muted)}
+footer{padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">⚡ FitBot</div>
+  <a href="#cta" class="nav-cta">Обсудить запуск</a>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Для фитнес-блогеров с аудиторией от 1000 подписчиков</div>
+  <h1>Зарабатывай на аудитории<br>без <s>инфоцыганства</s>,<br>без <s>бадов</s> и без <s>вложений</s></h1>
+  <p class="hero-sub">Личный Telegram-бот с геймификацией превращает твою аудиторию в платящее комьюнити. Запускаешь один раз — дальше работает само.</p>
+  <p class="hero-note">Аудитория тренера от 1000 · минимум 50 участников в боте</p>
+  <div class="hero-actions">
+    <a href="#cta" class="btn btn-primary">Хочу такой бот →</a>
+    <a href="#how" class="btn btn-ghost">Как это устроено</a>
+  </div>
+</div>
+
+<div class="skeptic">
+  <div class="skeptic-inner">
+    <h2>Звучит <span>подозрительно?</span><br>Давай разберёмся</h2>
+    <p>Никаких схем. Никакого впаривания. Просто инструмент который делает твою аудиторию активнее — и даёт тебе регулярный доход с людей которые уже тебе доверяют.</p>
+    <p>У тебя уже есть подписчики. Ты уже делаешь контент. Ты уже помогаешь людям тренироваться. Бот просто добавляет к этому монетизацию — честную, прозрачную, без посредников.</p>
+    <div class="facts">
+      <div class="fact">
+        <div class="fact-num">0 <span>₽</span></div>
+        <div class="fact-label">вложений на старте. Ни разработки, ни рекламы, ни закупки ничего</div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">3</div>
+        <div class="fact-label">кнопки чтобы запустить сезон. Дальше бот работает сам</div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">13</div>
+        <div class="fact-label">недель один сезон. Люди платят каждый месяц и не уходят</div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">50</div>
+        <div class="fact-label">уровней персонажа. Людям есть куда расти весь сезон</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Главное</div>
+  <h2 class="title">Твоя группа.<br>Твоё имя. Твои правила.</h2>
+  <p class="sub">Участники приходят на тебя. Ты — авторитет и эксперт. Бот просто держит движуху пока ты занимаешься своим делом.</p>
+  <div class="auth-grid">
+    <div class="auth-item">
+      <span class="icon">👑</span>
+      <h3>Ты главный в своей группе</h3>
+      <p>Бот работает в твоём Telegram-канале, под твоим именем. Участники знают что пришли к тебе — не к какому-то сервису.</p>
+    </div>
+    <div class="auth-item">
+      <span class="icon">📚</span>
+      <h3>Твои программы внутри</h3>
+      <p>Загружаешь свои программы тренировок и питания прямо в бота. Это твоя экспертиза — люди платят за неё.</p>
+    </div>
+    <div class="auth-item">
+      <span class="icon">💬</span>
+      <h3>Комьюнити само себя раскручивает</h3>
+      <p>Командные турниры заставляют людей общаться, тегать друг друга, болеть за команду. Ты просто наблюдаешь.</p>
+    </div>
+    <div class="auth-item">
+      <span class="icon">🔄</span>
+      <h3>Подписка, а не разовые продажи</h3>
+      <p>Не нужно каждый месяц делать новый запуск. Люди остаются потому что им интересно — не потому что купили курс.</p>
+    </div>
+  </div>
+</div>
+
+<div class="screens">
+  <div class="screens-inner">
+    <div class="label">Как это выглядит</div>
+    <h2 class="title">Вау-эффект с первого экрана</h2>
+    <p class="sub">Участники видят это и сразу хотят заполнить карточку, победить в турнире, убить босса.</p>
+    <div class="screens-grid">
+      <div class="screen-card">
+        <div class="screen-placeholder"><div class="ph-icon">🃏</div><span>Скрин: карточка участника</span></div>
+        <div class="screen-info"><h4>Карточка недели</h4><p>Стикеры за каждую активность. Хочется заполнить все клетки — работает как трекер привычек но намного круче.</p></div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-placeholder"><div class="ph-icon">🎖️</div><span>Скрин: уровень и лига</span></div>
+        <div class="screen-info"><h4>Уровни и лиги</h4><p>50 уровней, 10 лиг — аватар меняется с каждой лигой. Участники видят свой прогресс прямо на карточке весь сезон.</p></div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-placeholder"><div class="ph-icon">👾</div><span>Скрин: Граф Калорий</span></div>
+        <div class="screen-info"><h4>Босс-антагонист</h4><p>Граф Калорий провоцирует и издевается. Группа бьёт его тренировками вместе — это объединяет лучше любого челленджа.</p></div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-placeholder"><div class="ph-icon">🗺️</div><span>Скрин: карта Углеводска</span></div>
+        <div class="screen-info"><h4>Экспедиция с лором</h4><p>Нарративная карта с точками и концовками. Группа обсуждает дойдут ли до финиша — контент делает себя сам.</p></div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-placeholder"><div class="ph-icon">⚔️</div><span>Скрин: чат турнира</span></div>
+        <div class="screen-info"><h4>Командные турниры</h4><p>«Львы, вы где? Пантеры отрываются!» — люди сами мотивируют друг друга. Тебе не нужно ничего делать.</p></div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-placeholder"><div class="ph-icon">🏅</div><span>Скрин: итоги понедельника</span></div>
+        <div class="screen-info"><h4>Еженедельные итоги</h4><p>Каждый понедельник бот объявляет топ-3 и сбрасывает счёт. Новички могут обогнать старичков — все в игре.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Прогрессия</div>
+  <h2 class="title">Людям есть куда расти.<br>Весь сезон.</h2>
+  <p class="sub">Еженедельный сброс решает проблему демотивации отстающих. Долгосрочная прогрессия даёт смысл оставаться до конца.</p>
+  <div class="prog-grid">
+    <div class="prog-card">
+      <span class="prog-icon">⚡</span>
+      <h3>50 уровней и 10 лиг</h3>
+      <p>Очки за активности конвертируются в опыт персонажа. Уровень и лига растут весь сезон — это личный прогресс который никуда не исчезает.</p>
+      <div class="prog-example">С каждой лигой меняется <strong>аватар персонажа</strong> на карточке</div>
+    </div>
+    <div class="prog-card">
+      <span class="prog-icon">🌟</span>
+      <h3>Уровни стикеров</h3>
+      <p>За каждые 7 стикеров одного типа его уровень повышается. Стикер зарядки первого уровня и седьмого выглядят по-разному.</p>
+      <div class="prog-example">7 зарядок = <strong>стикер уровня 2</strong>. 14 = уровень 3. И так далее.</div>
+    </div>
+    <div class="prog-card">
+      <span class="prog-icon">📅</span>
+      <h3>Еженедельный сброс</h3>
+      <p>Очки обнуляются в понедельник. Новичок который пришёл на 8-й неделе может обогнать ветерана. Все в игре до последнего дня.</p>
+      <div class="prog-example">Топ-3 недели получают <strong>бейджики</strong>. В понедельник снова все равны.</div>
+    </div>
+    <div class="prog-card">
+      <span class="prog-icon">🎭</span>
+      <h3>Новый сезон — новая тема</h3>
+      <p>Каждый сезон новые стикеры, новые лиги, новый аватар, новый лор. Люди ждут следующего сезона как нового альбома.</p>
+      <div class="prog-example">Сезон 1: <strong>Углеводск 2086</strong>. Сезон 2: совсем другая вселенная.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="how" style="padding-top:0">
+  <div class="label">Как это работает</div>
+  <h2 class="title">Минимум действий.<br>Максимум эффекта.</h2>
+  <p class="sub">Всё что от тебя нужно — быть собой. Бот берёт на себя всё остальное.</p>
+  <div class="how-list">
+    <div class="how-item">
+      <div class="how-num">1</div>
+      <div>
+        <h3>Запускаешь сезон</h3>
+        <p>Выбираешь стартовый понедельник и тематику. Бот сам генерирует 13 недель, объявляет участникам и начинает считать активности.</p>
+        <div class="how-note">Настройка — 5 минут. Дальше бот работает без тебя.</div>
+      </div>
+    </div>
+    <div class="how-item">
+      <div class="how-num">2</div>
+      <div>
+        <h3>Загружаешь программы</h3>
+        <p>Тренировки, питание, рекомендации — всё что ты уже делаешь, оформляешь в разделе программ. Участники находят это внутри бота в любое время.</p>
+      </div>
+    </div>
+    <div class="how-item">
+      <div class="how-num">3</div>
+      <div>
+        <h3>Кидаешь секретное задание</h3>
+        <p>Нашёл смешное упражнение — кнопкой добавил видео и попросил всех повторить. Бот сам напомнит всем участникам, примет ответы и начислит очки.</p>
+        <div class="how-note">Ни у кого нормально не выходит — группа смеётся, обсуждает, сближается.</div>
+      </div>
+    </div>
+    <div class="how-item">
+      <div class="how-num">4</div>
+      <div>
+        <h3>Общаешься с аудиторией</h3>
+        <p>Комьюнити живёт само: люди тренируются, соревнуются в командах, бьют босса вместе. Тебе остаётся делать то что ты и так делаешь — делиться, отвечать, вдохновлять.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="label">Монетизация</div>
+  <h2 class="title">Посчитай сам</h2>
+  <div class="calc-wrap">
+    <div>
+      <div class="calc-title">Твой доход в месяц</div>
+      <div class="slider-row">
+        <div class="slider-top"><span>Участников в боте</span><strong id="mv">50</strong></div>
+        <input type="range" id="ms" min="50" max="500" value="50" step="10">
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span>Цена за участника, ₽/мес</span><strong id="pv">2 000 ₽</strong></div>
+        <input type="range" id="ps" min="1000" max="5000" value="2000" step="500">
+      </div>
+      <div class="calc-rows">
+        <div class="calc-row"><span class="l">Оборот</span><span class="v" id="rev">100 000 ₽</span></div>
+        <div class="calc-row"><span class="l">Комиссия платформы (~35%)</span><span class="v" id="fee" style="color:var(--muted)">−35 000 ₽</span></div>
+        <div class="calc-row total"><span class="l">Твой доход</span><span class="v" id="profit">65 000 ₽</span></div>
+      </div>
+    </div>
+    <div class="calc-text">
+      <h3>Доход который не требует нового запуска каждый месяц</h3>
+      <p>Люди платят подписку пока им интересно. А интересно им потому что каждую неделю что-то происходит: турниры, боссы, экспедиции, итоги.</p>
+      <p>Ты не продаёшь им курс который они пройдут и уйдут. Ты даёшь им живое место куда хочется возвращаться.</p>
+      <span class="pill">✓ Нулевые вложения на старте</span>
+    </div>
+  </div>
+</div>
+
+<div class="conditions">
+  <div class="conditions-inner">
+    <div class="label" style="display:inline-block;margin-bottom:1rem">Условия работы</div>
+    <h2>Беру не всех.<br>И это честно.</h2>
+    <p>Механики бота раскрываются когда есть живая аудитория. Без этого смысла нет — ни тебе, ни мне.</p>
+    <div class="condition-list">
+      <div class="condition-item">
+        <span class="ci">✓</span>
+        <p><strong>Аудитория от 1000 подписчиков</strong> — живых, не накрученных. Именно из них придут первые участники бота.</p>
+      </div>
+      <div class="condition-item">
+        <span class="ci">✓</span>
+        <p><strong>Минимум 50 участников в боте</strong> — иначе командные механики не раскрываются и турниры не работают как надо.</p>
+      </div>
+      <div class="condition-item">
+        <span class="ci">✓</span>
+        <p><strong>Telegram-группа или канал</strong> — бот работает в экосистеме Telegram.</p>
+      </div>
+      <div class="condition-item">
+        <span class="ci">✓</span>
+        <p><strong>Ты реально занимаешься фитнесом</strong> — участники должны получать настоящую экспертизу, не пустышку.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta" id="cta">
+  <div class="label" style="display:inline-block;margin-bottom:1.25rem">Готов?</div>
+  <h2>Запусти первый сезон<br>уже в этом месяце</h2>
+  <p>Расскажи немного о своей аудитории — разберёмся подходит ли формат именно тебе.</p>
+  <a href="https://t.me/yourusername" class="btn btn-primary" style="font-size:1rem">Написать в Telegram →</a>
+  <div class="cta-note">Первым пилотным тренерам — приоритетный запуск и сниженная комиссия</div>
+</div>
+
+<footer>
+  <p>Бот разрабатывается и поддерживается индивидуально под каждого тренера</p>
+</footer>
+
+<script>
+const ms=document.getElementById('ms'),ps=document.getElementById('ps');
+const mv=document.getElementById('mv'),pv=document.getElementById('pv');
+const rev=document.getElementById('rev'),fee=document.getElementById('fee'),profit=document.getElementById('profit');
+function upd(){
+  const m=+ms.value,p=+ps.value,r=m*p,f=Math.round(r*.35),pr=r-f;
+  mv.textContent=m;
+  pv.textContent=p.toLocaleString('ru')+' \u20bd';
+  rev.textContent=r.toLocaleString('ru')+' \u20bd';
+  fee.textContent='\u2212'+f.toLocaleString('ru')+' \u20bd';
+  profit.textContent=pr.toLocaleString('ru')+' \u20bd';
+}
+ms.addEventListener('input',upd);
+ps.addEventListener('input',upd);
+</script>
+</body>
+</html>
